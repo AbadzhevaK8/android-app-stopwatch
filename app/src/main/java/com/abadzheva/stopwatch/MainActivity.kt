@@ -2,6 +2,7 @@ package com.abadzheva.stopwatch
 
 import android.os.Bundle
 import android.os.SystemClock
+import android.widget.Chronometer
 import androidx.activity.enableEdgeToEdge
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.ViewCompat
@@ -11,6 +12,7 @@ import com.abadzheva.stopwatch.databinding.ActivityMainBinding
 
 class MainActivity : AppCompatActivity() {
     private val binding by viewBinding(ActivityMainBinding::bind, R.id.main)
+    private lateinit var stopwatch: Chronometer
     private var running = false
     private var offset: Long = 0
 
@@ -24,10 +26,12 @@ class MainActivity : AppCompatActivity() {
             insets
         }
 
+        stopwatch = binding.stopwatch
+
         binding.startButton.setOnClickListener {
             if (!running) {
                 setBaseTime()
-                binding.stopwatch.start()
+                stopwatch.start()
                 running = true
             }
         }
@@ -35,7 +39,7 @@ class MainActivity : AppCompatActivity() {
         binding.pauseButton.setOnClickListener {
             if (running) {
                 saveOffset()
-                binding.stopwatch.stop()
+                stopwatch.stop()
                 running = false
             }
         }
@@ -46,11 +50,11 @@ class MainActivity : AppCompatActivity() {
         }
     }
 
-    private fun saveOffset() {
-        binding.stopwatch.base = SystemClock.elapsedRealtime() - offset
+    private fun setBaseTime() {
+        stopwatch.base = SystemClock.elapsedRealtime() - offset
     }
 
-    private fun setBaseTime() {
-        offset = SystemClock.elapsedRealtime() - binding.stopwatch.base
+    private fun saveOffset() {
+        offset = SystemClock.elapsedRealtime() - stopwatch.base
     }
 }
