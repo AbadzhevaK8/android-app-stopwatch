@@ -28,6 +28,17 @@ class MainActivity : AppCompatActivity() {
 
         stopwatch = binding.stopwatch
 
+        if (savedInstanceState != null) {
+            offset = savedInstanceState.getLong(OFFSET_KEY)
+            running = savedInstanceState.getBoolean(RUNNING_KEY)
+            if (running) {
+                stopwatch.base = savedInstanceState.getLong(BASE_KEY)
+                stopwatch.start()
+            } else {
+                setBaseTime()
+            }
+        }
+
         binding.startButton.setOnClickListener {
             if (!running) {
                 setBaseTime()
@@ -50,11 +61,24 @@ class MainActivity : AppCompatActivity() {
         }
     }
 
+    override fun onSaveInstanceState(outState: Bundle) {
+        outState.putLong(OFFSET_KEY, offset)
+        outState.putBoolean(RUNNING_KEY, running)
+        outState.putLong(BASE_KEY, stopwatch.base)
+        super.onSaveInstanceState(outState)
+    }
+
     private fun setBaseTime() {
         stopwatch.base = SystemClock.elapsedRealtime() - offset
     }
 
     private fun saveOffset() {
         offset = SystemClock.elapsedRealtime() - stopwatch.base
+    }
+
+    companion object {
+        const val OFFSET_KEY = "offset"
+        const val RUNNING_KEY = "running"
+        const val BASE_KEY = "base"
     }
 }
